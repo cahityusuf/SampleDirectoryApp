@@ -31,12 +31,29 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "User",
+                schema: "DirectoryUser",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Ad = table.Column<string>(type: "text", nullable: true),
+                    Soyad = table.Column<string>(type: "text", nullable: true),
+                    Firma = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ContactInfo",
                 schema: "DirectoryContactInfo",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
                     ContactTypeId = table.Column<int>(type: "integer", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true)
                 },
@@ -50,28 +67,11 @@ namespace Infrastructure.Migrations
                         principalTable: "ContactType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "User",
-                schema: "DirectoryUser",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Ad = table.Column<string>(type: "text", nullable: true),
-                    Soyad = table.Column<string>(type: "text", nullable: true),
-                    Firma = table.Column<string>(type: "text", nullable: true),
-                    ContactInfoId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_ContactInfo_ContactInfoId",
-                        column: x => x.ContactInfoId,
-                        principalSchema: "DirectoryContactInfo",
-                        principalTable: "ContactInfo",
+                        name: "FK_ContactInfo_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "DirectoryUser",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -83,18 +83,14 @@ namespace Infrastructure.Migrations
                 column: "ContactTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_ContactInfoId",
-                schema: "DirectoryUser",
-                table: "User",
-                column: "ContactInfoId");
+                name: "IX_ContactInfo_UserId",
+                schema: "DirectoryContactInfo",
+                table: "ContactInfo",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "User",
-                schema: "DirectoryUser");
-
             migrationBuilder.DropTable(
                 name: "ContactInfo",
                 schema: "DirectoryContactInfo");
@@ -102,6 +98,10 @@ namespace Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "ContactType",
                 schema: "DirectoryContactType");
+
+            migrationBuilder.DropTable(
+                name: "User",
+                schema: "DirectoryUser");
         }
     }
 }

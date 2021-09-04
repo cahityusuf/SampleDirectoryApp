@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DirectoryDbContext))]
-    [Migration("20210904130400_V1")]
+    [Migration("20210904131229_V1")]
     partial class V1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,9 +33,14 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ContactTypeId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("ContactInfo", "DirectoryContactInfo");
                 });
@@ -65,9 +70,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Ad")
                         .HasColumnType("text");
 
-                    b.Property<long>("ContactInfoId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Firma")
                         .HasColumnType("text");
 
@@ -75,8 +77,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ContactInfoId");
 
                     b.ToTable("User", "DirectoryUser");
                 });
@@ -89,22 +89,14 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ContactType");
-                });
-
-            modelBuilder.Entity("Domain.Entities.User", b =>
-                {
-                    b.HasOne("Domain.Entities.ContactInfo", "ContactInfo")
-                        .WithMany("User")
-                        .HasForeignKey("ContactInfoId")
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ContactInfo");
-                });
+                    b.Navigation("ContactType");
 
-            modelBuilder.Entity("Domain.Entities.ContactInfo", b =>
-                {
                     b.Navigation("User");
                 });
 
