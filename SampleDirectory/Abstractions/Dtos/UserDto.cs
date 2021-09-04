@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Abstractions.Dtos
 {
-    public class UserDto:IDto
+    public class UserDto : IDto
     {
         public long Id { get; set; }
         public string Ad { get; set; }
