@@ -81,7 +81,7 @@ namespace Application.Services
             return new ErrorDataResult<UserDto>(Messages.Error);
         }
 
-        public async Task<IResult> Delete(long id)
+        public async Task<IResult> DeleteAsync(long id)
         {
             if (id == 0) return new ErrorResult(Messages.InvalidId);
 
