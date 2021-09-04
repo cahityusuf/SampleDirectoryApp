@@ -68,8 +68,8 @@ namespace DirectoryApi
             services.AddAutoMapper(apiOptions.RegistrationAssemblies);
 
             Action<DbContextOptionsBuilder> dbContextoptionsAction = dbcontextOptions =>
-                dbcontextOptions.UseNpgsql(Configuration.GetConnectionString("TelephoneBookDbContext"),
-                    b => b.MigrationsAssembly("VYS.Infrastructure"));
+                dbcontextOptions.UseNpgsql(Configuration.GetConnectionString("DirectoryDbContext"),
+                    b => b.MigrationsAssembly("Infrastructure"));
             services.AddUnitOfWork<DirectoryDbContext>(dbContextoptionsAction);
 
             services.AddSwaggerGen(c =>
