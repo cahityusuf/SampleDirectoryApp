@@ -53,7 +53,7 @@ namespace DirectoryApi.Controllers.V1
 
         }
 
-        [HttpGet("InsertAsync")]
+        [HttpPost("InsertAsync")]
         [ProducesResponseType(typeof(ContactTypeDto), statusCode: 200)]
         [AllowAnonymous]
         public async Task<IActionResult> InsertAsync(ContactTypeDto contactType)
@@ -68,7 +68,7 @@ namespace DirectoryApi.Controllers.V1
             return BadRequest(result.Message);
         }
 
-        [HttpGet("UpdateAsync")]
+        [HttpPut("UpdateAsync")]
         [ProducesResponseType(typeof(ContactTypeDto), statusCode: 200)]
         [AllowAnonymous]
         public async Task<IActionResult> UpdateAsync(ContactTypeDto contactType)
@@ -83,7 +83,7 @@ namespace DirectoryApi.Controllers.V1
             return BadRequest(result.Message);
         }
 
-        [HttpGet("DeleteAsync")]
+        [HttpDelete("DeleteAsync")]
         [ProducesResponseType(typeof(bool), statusCode: 200)]
         [AllowAnonymous]
         public async Task<IActionResult> DeleteAsync(long id)

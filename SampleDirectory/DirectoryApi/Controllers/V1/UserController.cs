@@ -50,7 +50,7 @@ namespace DirectoryApi.Controllers.V1
 
         }
 
-        [HttpGet("InsertAsync")]
+        [HttpPost("InsertAsync")]
         [ProducesResponseType(typeof(UserDto), statusCode: 200)]
         [AllowAnonymous]
         public async Task<IActionResult> InsertAsync(UserDto user)
@@ -65,7 +65,7 @@ namespace DirectoryApi.Controllers.V1
             return BadRequest(result.Message);
         }
 
-        [HttpGet("UpdateAsync")]
+        [HttpPut("UpdateAsync")]
         [ProducesResponseType(typeof(UserDto), statusCode: 200)]
         [AllowAnonymous]
         public async Task<IActionResult> UpdateAsync(UserDto user)
@@ -80,7 +80,7 @@ namespace DirectoryApi.Controllers.V1
             return BadRequest(result.Message);
         }
 
-        [HttpGet("DeleteAsync")]
+        [HttpDelete("DeleteAsync")]
         [ProducesResponseType(typeof(bool), statusCode: 200)]
         [AllowAnonymous]
         public async Task<IActionResult> DeleteAsync(long id)
