@@ -2,8 +2,9 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using Abstractions.Data.Enums;
-using Data.Abstractions;
+using Abstractions.Data;
+using Abstractions.Enums;
+
 
 namespace Data.Repository
 {

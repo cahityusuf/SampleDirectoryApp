@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using Abstractions.Data.Enums;
-using Data.Abstractions;
+using Abstractions.Data;
+using Abstractions.Enums;
 
 namespace Data.Repository
 {

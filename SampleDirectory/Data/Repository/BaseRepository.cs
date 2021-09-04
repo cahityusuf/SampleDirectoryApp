@@ -10,17 +10,18 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Abstractions.Data;
+using Abstractions.Enums;
 
 namespace Data.Repository
 {
     public abstract class BaseRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        protected readonly UnitOfWork _dbContext;
+        protected readonly UnitOfWork.UnitOfWork _dbContext;
         protected readonly DbSet<TEntity> _dbSet;
 
         public BaseRepository(IUnitOfWork dbContext)
         {
-            _dbContext = dbContext == null ? throw new ArgumentNullException(nameof(dbContext)) : dbContext as UnitOfWork;
+            _dbContext = dbContext == null ? throw new ArgumentNullException(nameof(dbContext)) : dbContext as UnitOfWork.UnitOfWork;
             _dbSet = _dbContext.Set<TEntity>();
         }
 
