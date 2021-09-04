@@ -10,56 +10,78 @@ using Abstractions.Services;
 using Application.Constants;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
 {
-    public class UserService:IUserService
+    public class UserService : IUserService
     {
-        private readonly IRepository<User> _users;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        public UserService(IRepository<User> users, IMapper mapper)
+        public UserService(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _users = users;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IDataResult<UserDto>> GetByIdAsync(long id)
         {
-            if (id == 0) return new ErrorDataResult<UserDto>(Messages.InvalidId);
-
-            var result = await _users.FindAsync(id);
-
-            if (result!=null)
+            try
             {
-                return new SuccessDataResult<UserDto>(_mapper.Map<UserDto>(result));
+                if (id == 0) return new ErrorDataResult<UserDto>(Messages.InvalidId);
+
+                var _users = _unitOfWork.GetRepository<User>();
+
+                var result = await _users.GetFirstOrDefaultAsync(predicate: p => p.Id == id,
+                                                                    include: i => i.Include(c => c.ContactInfo)
+                                                                                                .ThenInclude(t => t.ContactType));
+
+                if (result != null)
+                {
+                    return new SuccessDataResult<UserDto>(_mapper.Map<UserDto>(result));
+                }
+
+                return new ErrorDataResult<UserDto>(Messages.Error);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
 
-            return new ErrorDataResult<UserDto>(Messages.Error);
         }
 
-        public async Task<IDataResult<UserDto>> GetListAsync()
+        public async Task<IDataResult<List<UserDto>>> GetListAsync()
         {
+            var _users = _unitOfWork.GetRepository<User>();
 
             var result = await _users.GetAllAsync();
 
             if (result != null)
             {
-                return new SuccessDataResult<UserDto>(_mapper.Map<UserDto>(result));
+                return new SuccessDataResult<List<UserDto>>(_mapper.Map<List<UserDto>>(result));
             }
 
-            return new ErrorDataResult<UserDto>(Messages.Error);
+            return new ErrorDataResult<List<UserDto>>(Messages.Error);
         }
 
         public async Task<IDataResult<UserDto>> InsertAsync(UserDto user)
         {
             if (user == null) return new ErrorDataResult<UserDto>(Messages.InvalidId);
 
+            var _users = _unitOfWork.GetRepository<User>();
+
             var result = await _users.InsertAsync(_mapper.Map<User>(user));
 
             if (result != null)
             {
-                return new SuccessDataResult<UserDto>(_mapper.Map<UserDto>(result));
+                var save = await _users.SaveChangesAsync();
+
+                if (save > 0)
+                {
+                    return new SuccessDataResult<UserDto>(_mapper.Map<UserDto>(result));
+                }
+
             }
 
             return new ErrorDataResult<UserDto>(Messages.Error);
@@ -68,6 +90,8 @@ namespace Application.Services
         public async Task<IDataResult<UserDto>> UpdateAsync(UserDto user)
         {
             if (user == null) return new ErrorDataResult<UserDto>(Messages.InvalidId);
+
+            var _users = _unitOfWork.GetRepository<User>();
 
             _users.Update(_mapper.Map<User>(user));
 
@@ -84,6 +108,8 @@ namespace Application.Services
         public async Task<IResult> DeleteAsync(long id)
         {
             if (id == 0) return new ErrorResult(Messages.InvalidId);
+
+            var _users = _unitOfWork.GetRepository<User>();
 
             _users.Delete(id);
 

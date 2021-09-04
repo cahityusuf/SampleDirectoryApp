@@ -15,8 +15,8 @@ namespace Domain.Entities
         {
             ContactInfo = new HashSet<ContactInfo>();
         }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Description { get; set; }
-        public ICollection<ContactInfo> ContactInfo { get; set; }
+        public virtual ICollection<ContactInfo> ContactInfo { get; set; }
     }
 }

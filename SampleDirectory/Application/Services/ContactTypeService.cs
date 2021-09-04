@@ -16,17 +16,19 @@ namespace Application.Services
     public class ContactTypeService:IContactTypeService
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<ContactType> _contactTypes;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ContactTypeService(IMapper mapper, IRepository<ContactType> contactTypes)
+        public ContactTypeService(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
-            _contactTypes = contactTypes;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IDataResult<ContactTypeDto>> GetByIdAsync(long id)
         {
             if (id == 0) return new ErrorDataResult<ContactTypeDto>(Messages.InvalidId);
+
+            var _contactTypes = _unitOfWork.GetRepository<ContactType>();
 
             var result = await _contactTypes.FindAsync(id);
 
@@ -38,27 +40,37 @@ namespace Application.Services
             return new ErrorDataResult<ContactTypeDto>(Messages.Error);
         }
 
-        public async Task<IDataResult<ContactTypeDto>> GetListAsync()
+        public async Task<IDataResult<List<ContactTypeDto>>> GetListAsync()
         {
+            var _contactTypes = _unitOfWork.GetRepository<ContactType>();
+
             var result = await _contactTypes.GetAllAsync();
 
             if (result != null)
             {
-                return new SuccessDataResult<ContactTypeDto>(_mapper.Map<ContactTypeDto>(result));
+                return new SuccessDataResult<List<ContactTypeDto>>(_mapper.Map<List<ContactTypeDto>>(result));
             }
 
-            return new ErrorDataResult<ContactTypeDto>(Messages.Error);
+            return new ErrorDataResult<List<ContactTypeDto>>(Messages.Error);
         }
 
         public async Task<IDataResult<ContactTypeDto>> InsertAsync(ContactTypeDto contactType)
         {
             if (contactType == null) return new ErrorDataResult<ContactTypeDto>(Messages.InvalidId);
 
-            var result = await _contactTypes.InsertAsync(_mapper.Map<ContactType>(contactType));
+            var _users = _unitOfWork.GetRepository<ContactType>();
+
+            var result = await _users.InsertAsync(_mapper.Map<ContactType>(contactType));
 
             if (result != null)
             {
-                return new SuccessDataResult<ContactTypeDto>(_mapper.Map<ContactTypeDto>(result));
+                var save = await _users.SaveChangesAsync();
+
+                if (save > 0)
+                {
+                    return new SuccessDataResult<ContactTypeDto>(_mapper.Map<ContactTypeDto>(result));
+                }
+
             }
 
             return new ErrorDataResult<ContactTypeDto>(Messages.Error);
@@ -67,6 +79,8 @@ namespace Application.Services
         public async Task<IDataResult<ContactTypeDto>> UpdateAsync(ContactTypeDto contactType)
         {
             if (contactType == null) return new ErrorDataResult<ContactTypeDto>(Messages.InvalidId);
+
+            var _contactTypes = _unitOfWork.GetRepository<ContactType>();
 
             _contactTypes.Update(_mapper.Map<ContactType>(contactType));
 
@@ -83,6 +97,8 @@ namespace Application.Services
         public async Task<IResult> DeleteAsync(long id)
         {
             if (id == 0) return new ErrorResult(Messages.InvalidId);
+
+            var _contactTypes = _unitOfWork.GetRepository<ContactType>();
 
             _contactTypes.Delete(id);
 

@@ -8,12 +8,7 @@ namespace Abstractions.Dtos
 {
     public class ContactTypeDto:IDto
     {
-        public ContactTypeDto()
-        {
-            ContactInfo = new HashSet<ContactInfoDto>();
-        }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Description { get; set; }
-        public ICollection<ContactInfoDto> ContactInfo { get; set; }
     }
 }

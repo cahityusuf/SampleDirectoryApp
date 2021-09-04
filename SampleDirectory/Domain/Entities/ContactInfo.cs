@@ -14,8 +14,8 @@ namespace Domain.Entities
         public long Id { get; set; }
         public User User { get; set; }
         public long UserId { get; set; }
-        public int ContactTypeId { get; set; }
         public ContactType ContactType { get; set; }
+        public long ContactTypeId { get; set; }
         public string Description { get; set; }
 
     }

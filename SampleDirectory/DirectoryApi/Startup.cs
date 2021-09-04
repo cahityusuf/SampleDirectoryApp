@@ -13,9 +13,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Abstractions.Data;
+using Abstractions.Dtos;
+using Abstractions.Services;
+using Application.Services;
 using AutoMapper;
 using Data.Configuration;
 using Data.Helpers;
+using Data.Repository;
+using Domain.Entities;
 using Infrastructure.DataContexts;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc.Versioning.Conventions;
@@ -66,12 +72,14 @@ namespace DirectoryApi
             );
 
             services.AddAutoMapper(apiOptions.RegistrationAssemblies);
-
             Action<DbContextOptionsBuilder> dbContextoptionsAction = dbcontextOptions =>
                 dbcontextOptions.UseNpgsql(Configuration.GetConnectionString("DirectoryDbContext"),
                     b => b.MigrationsAssembly("Infrastructure"));
-            services.AddUnitOfWork<DirectoryDbContext>(dbContextoptionsAction);
 
+            services.AddUnitOfWork<DirectoryDbContext>(dbContextoptionsAction);
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IContactInfoService, ContactInfoService>();
+            services.AddScoped<IContactTypeService, ContactTypeService>();
             services.AddSwaggerGen(c =>
             {
                 c.DescribeAllParametersInCamelCase();

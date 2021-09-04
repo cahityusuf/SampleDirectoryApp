@@ -13,7 +13,8 @@ namespace Application.Mapper
     {
         public ContactInfoProfile()
         {
-            CreateMap<ContactInfo, ContactInfoDto>();
+            CreateMap<ContactInfo, ContactInfoDto>().ReverseMap();
+
         }
     }
 }

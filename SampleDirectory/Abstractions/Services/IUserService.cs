@@ -11,7 +11,7 @@ namespace Abstractions.Services
     public interface IUserService:IBusinessService
     {
         Task<IDataResult<UserDto>> GetByIdAsync(long id);
-        Task<IDataResult<UserDto>> GetListAsync();
+        Task<IDataResult<List<UserDto>>> GetListAsync();
         Task<IDataResult<UserDto>> InsertAsync(UserDto user);
 
         Task<IDataResult<UserDto>> UpdateAsync(UserDto user);

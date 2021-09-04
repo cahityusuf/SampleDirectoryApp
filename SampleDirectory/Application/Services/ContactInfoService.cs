@@ -16,17 +16,19 @@ namespace Application.Services
     public class ContactInfoService: IContactInfoService
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<ContactInfo> _contactInfo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ContactInfoService(IMapper mapper, IRepository<ContactInfo> contactInfo)
+        public ContactInfoService(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
-            _contactInfo = contactInfo;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IDataResult<ContactInfoDto>> GetByIdAsync(long id)
         {
             if (id == 0) return new ErrorDataResult<ContactInfoDto>(Messages.InvalidId);
+
+            var _contactInfo = _unitOfWork.GetRepository<ContactInfo>();
 
             var result = await _contactInfo.FindAsync(id);
 
@@ -38,28 +40,37 @@ namespace Application.Services
             return new ErrorDataResult<ContactInfoDto>(Messages.Error);
         }
 
-        public async Task<IDataResult<ContactInfoDto>> GetListAsync()
+        public async Task<IDataResult<List<ContactInfoDto>>> GetListAsync()
         {
+            var _contactInfo = _unitOfWork.GetRepository<ContactInfo>();
 
             var result = await _contactInfo.GetAllAsync();
 
             if (result != null)
             {
-                return new SuccessDataResult<ContactInfoDto>(_mapper.Map<ContactInfoDto>(result));
+                return new SuccessDataResult<List<ContactInfoDto>>(_mapper.Map<List<ContactInfoDto>>(result));
             }
 
-            return new ErrorDataResult<ContactInfoDto>(Messages.Error);
+            return new ErrorDataResult<List<ContactInfoDto>>(Messages.Error);
         }
 
         public async Task<IDataResult<ContactInfoDto>> InsertAsync(ContactInfoDto contactInfo)
         {
             if (contactInfo == null) return new ErrorDataResult<ContactInfoDto>(Messages.InvalidId);
 
-            var result = await _contactInfo.InsertAsync(_mapper.Map<ContactInfo>(contactInfo));
+            var _users = _unitOfWork.GetRepository<ContactInfo>();
+
+            var result = await _users.InsertAsync(_mapper.Map<ContactInfo>(contactInfo));
 
             if (result != null)
             {
-                return new SuccessDataResult<ContactInfoDto>(_mapper.Map<ContactInfoDto>(result));
+                var save = await _users.SaveChangesAsync();
+
+                if (save > 0)
+                {
+                    return new SuccessDataResult<ContactInfoDto>(_mapper.Map<ContactInfoDto>(result));
+                }
+
             }
 
             return new ErrorDataResult<ContactInfoDto>(Messages.Error);
@@ -68,6 +79,8 @@ namespace Application.Services
         public async Task<IDataResult<ContactInfoDto>> UpdateAsync(ContactInfoDto contactInfo)
         {
             if (contactInfo == null) return new ErrorDataResult<ContactInfoDto>(Messages.InvalidId);
+
+            var _contactInfo = _unitOfWork.GetRepository<ContactInfo>();
 
             _contactInfo.Update(_mapper.Map<ContactInfo>(contactInfo));
 
@@ -84,6 +97,8 @@ namespace Application.Services
         public async Task<IResult> DeleteAsync(long id)
         {
             if (id == 0) return new ErrorResult(Messages.InvalidId);
+
+            var _contactInfo = _unitOfWork.GetRepository<ContactInfo>();
 
             _contactInfo.Delete(id);
 

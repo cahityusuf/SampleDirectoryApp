@@ -20,6 +20,6 @@ namespace Domain.Entities
         public string Soyad { get; set; }
         public string Firma { get; set; }
 
-        public ICollection<ContactInfo> ContactInfo;
+        public virtual ICollection<ContactInfo> ContactInfo { get; set; }
     }
 }

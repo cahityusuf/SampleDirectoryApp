@@ -11,7 +11,7 @@ namespace Abstractions.Services
     public interface IContactTypeService:IBusinessService
     {
         Task<IDataResult<ContactTypeDto>> GetByIdAsync(long id);
-        Task<IDataResult<ContactTypeDto>> GetListAsync();
+        Task<IDataResult<List<ContactTypeDto>>> GetListAsync();
         Task<IDataResult<ContactTypeDto>> InsertAsync(ContactTypeDto contactType);
 
         Task<IDataResult<ContactTypeDto>> UpdateAsync(ContactTypeDto contactType);
