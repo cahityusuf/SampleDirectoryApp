@@ -10,10 +10,11 @@ using Abstractions.Services;
 using Application.Constants;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
 {
-    public class ContactInfoService: IContactInfoService
+    public class ContactInfoService : IContactInfoService
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -111,5 +112,7 @@ namespace Application.Services
 
             return new ErrorResult(Messages.Error);
         }
+
+
     }
 }

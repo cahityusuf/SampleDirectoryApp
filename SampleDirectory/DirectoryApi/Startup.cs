@@ -26,6 +26,8 @@ using Infrastructure.DataContexts;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc.Versioning.Conventions;
 using Microsoft.EntityFrameworkCore;
+using RabbitMQ;
+using RabbitMQ.Client;
 
 namespace DirectoryApi
 {
@@ -72,6 +74,7 @@ namespace DirectoryApi
             );
 
             services.AddAutoMapper(apiOptions.RegistrationAssemblies);
+
             Action<DbContextOptionsBuilder> dbContextoptionsAction = dbcontextOptions =>
                 dbcontextOptions.UseNpgsql(Configuration.GetConnectionString("DirectoryDbContext"),
                     b => b.MigrationsAssembly("Infrastructure"));

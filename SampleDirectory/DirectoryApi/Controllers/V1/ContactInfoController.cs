@@ -37,6 +37,7 @@ namespace DirectoryApi.Controllers.V1
             return BadRequest(result.Message);
         }
 
+
         [HttpGet("GetListAsync")]
         [ProducesResponseType(typeof(List<ContactInfoDto>), statusCode: 200)]
         [AllowAnonymous]
