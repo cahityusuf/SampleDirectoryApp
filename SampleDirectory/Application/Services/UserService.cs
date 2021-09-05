@@ -55,7 +55,8 @@ namespace Application.Services
         {
             var _users = _unitOfWork.GetRepository<User>();
 
-            var result = await _users.GetAllAsync();
+            var result = await _users.GetAllAsync(include: i => i.Include(c => c.ContactInfo)
+                    .ThenInclude(t => t.ContactType));
 
             if (result != null)
             {
