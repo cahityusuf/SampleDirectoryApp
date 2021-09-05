@@ -17,5 +17,7 @@ namespace Abstractions.Services
         Task<IDataResult<UserDto>> UpdateAsync(UserDto user);
 
         Task<IResult> DeleteAsync(long id);
+
+      
     }
 }

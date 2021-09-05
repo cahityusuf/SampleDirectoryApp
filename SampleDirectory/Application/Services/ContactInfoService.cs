@@ -10,10 +10,11 @@ using Abstractions.Services;
 using Application.Constants;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
 {
-    public class ContactInfoService: IContactInfoService
+    public class ContactInfoService : IContactInfoService
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -110,6 +111,51 @@ namespace Application.Services
             }
 
             return new ErrorResult(Messages.Error);
+        }
+
+        public IDataResult<List<RaporDto>> Rapor()
+        {
+            var _contactInfo = _unitOfWork.GetRepository<ContactInfo>();
+
+            var res = _contactInfo.GetAll(p => p.ContactTypeId == 3).ToList();//ContactType Konum Seçilenler
+
+            if (res != null)
+            {
+                var result = res.GroupBy(x => new { x.Description })
+                   .Select(b => new RaporDto()
+                   {
+                       kisisayisi = b.Select(bn => bn.UserId).ToList().Count(),
+                       konum = b.Where(s => s.Description == b.Key.Description).FirstOrDefault().Description,
+                       UserId = b.Where(s => s.Description == b.Key.Description).Select(s => s.UserId).ToList(),
+                   }).ToList();
+
+                if (result.Count != 0)
+                {
+                    var telefonListesi = _contactInfo.GetAll(p => p.ContactTypeId == 1).ToList();
+
+                    if (telefonListesi.Count != 0)
+                    {
+                        foreach (var item in telefonListesi)
+                        {
+                            foreach (var group in result)
+                            {
+                                var telefonuVarmi = group.UserId.Exists(p => p == item.UserId);
+
+                                if (telefonuVarmi)
+                                {
+                                    group.telefonsayisi += 1;
+                                }
+                            }
+                        }
+                    }
+
+                }
+                return new SuccessDataResult<List<RaporDto>>(result.ToList());
+
+            }
+
+            return new ErrorDataResult<List<RaporDto>>(Messages.Error);
+
         }
     }
 }

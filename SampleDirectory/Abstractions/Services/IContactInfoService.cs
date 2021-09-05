@@ -17,5 +17,8 @@ namespace Abstractions.Services
         Task<IDataResult<ContactInfoDto>> UpdateAsync(ContactInfoDto contactInfo);
 
         Task<IResult> DeleteAsync(long id);
+
+        IDataResult<List<RaporDto>> Rapor();
+
     }
 }
