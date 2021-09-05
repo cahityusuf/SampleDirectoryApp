@@ -38,21 +38,6 @@ namespace DirectoryApi.Controllers.V1
         }
 
 
-        [HttpGet("Rapor")]
-        [ProducesResponseType(typeof(List<RaporDto>), statusCode: 200)]
-        [AllowAnonymous]
-        public IActionResult Rapor()
-        {
-            var result = _contactInfoService.Rapor();
-
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result.Message);
-        }
-
         [HttpGet("GetListAsync")]
         [ProducesResponseType(typeof(List<ContactInfoDto>), statusCode: 200)]
         [AllowAnonymous]

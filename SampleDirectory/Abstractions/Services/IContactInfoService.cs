@@ -18,7 +18,7 @@ namespace Abstractions.Services
 
         Task<IResult> DeleteAsync(long id);
 
-        IDataResult<List<RaporDto>> Rapor();
+
 
     }
 }
