@@ -8,7 +8,7 @@
 
 # MIGRATIN ISLEMLERİ
 1.  Migration: Appsettings.Json dosyasında, "ConnectionStrings:DirectoryDbContext" dizininde bulunan Connectionstring'te bulunan "Database" ve "Password" bilgileri önemlidir.
-"Database" adı => ReportingServiceDb olarak belirlenmiştir.
+"Database" adı => DirectoryDb olarak belirlenmiştir.
 2.  Password => localinizde kurulu olan postgresql databasine bağlandığınız şifredir. Her kişide farklılık gösterdiğinden boş bırakıyorum.Lütfen kendi şifrenizi giriniz.
 3.  bu işlemden sonra "Update-Database" komutu ile tablolarınızı oluşturabilirsiniz.
 
