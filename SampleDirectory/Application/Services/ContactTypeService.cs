@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Abstractions.Data;
 using Abstractions.Dtos;
+using Abstractions.Enums;
 using Abstractions.Results;
 using Abstractions.Services;
 using Application.Constants;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
 {
@@ -30,7 +32,7 @@ namespace Application.Services
 
             var _contactTypes = _unitOfWork.GetRepository<ContactType>();
 
-            var result = await _contactTypes.FindAsync(id);
+            var result = await _contactTypes.GetAllAsync(p=>p.Id==id,include:i=>i.Include(c=>c.ContactInfo));
 
             if (result != null)
             {
@@ -44,7 +46,7 @@ namespace Application.Services
         {
             var _contactTypes = _unitOfWork.GetRepository<ContactType>();
 
-            var result = await _contactTypes.GetAllAsync();
+            var result = await _contactTypes.GetAllAsync(include: i => i.Include(c => c.ContactInfo));
 
             if (result != null)
             {
@@ -60,7 +62,7 @@ namespace Application.Services
 
             var _users = _unitOfWork.GetRepository<ContactType>();
 
-            var result = await _users.InsertAsync(_mapper.Map<ContactType>(contactType));
+            var result = _users.Insert(_mapper.Map<ContactType>(contactType),insertStrategy:InsertStrategy.OnlytMain);
 
             if (result != null)
             {
@@ -82,7 +84,7 @@ namespace Application.Services
 
             var _contactTypes = _unitOfWork.GetRepository<ContactType>();
 
-            _contactTypes.Update(_mapper.Map<ContactType>(contactType));
+            _contactTypes.Update(_mapper.Map<ContactType>(contactType),UpdateStrategy.OnlyMain);
 
             var result = await _contactTypes.SaveChangesAsync();
 

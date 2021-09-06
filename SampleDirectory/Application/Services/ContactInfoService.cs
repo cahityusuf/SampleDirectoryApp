@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Abstractions.Data;
 using Abstractions.Dtos;
+using Abstractions.Enums;
 using Abstractions.Results;
 using Abstractions.Services;
 using Application.Constants;
@@ -31,7 +32,7 @@ namespace Application.Services
 
             var _contactInfo = _unitOfWork.GetRepository<ContactInfo>();
 
-            var result = await _contactInfo.FindAsync(id);
+            var result = await _contactInfo.GetAllAsync(predicate:p=>p.Id==id,include:i=>i.Include(c=>c.ContactType));
 
             if (result != null)
             {
@@ -45,7 +46,7 @@ namespace Application.Services
         {
             var _contactInfo = _unitOfWork.GetRepository<ContactInfo>();
 
-            var result = await _contactInfo.GetAllAsync();
+            var result = await _contactInfo.GetAllAsync(include: i => i.Include(c => c.ContactType));
 
             if (result != null)
             {
@@ -61,7 +62,7 @@ namespace Application.Services
 
             var _users = _unitOfWork.GetRepository<ContactInfo>();
 
-            var result = await _users.InsertAsync(_mapper.Map<ContactInfo>(contactInfo));
+            var result = _users.Insert(_mapper.Map<ContactInfo>(contactInfo),InsertStrategy.OnlytMain);
 
             if (result != null)
             {
@@ -83,7 +84,7 @@ namespace Application.Services
 
             var _contactInfo = _unitOfWork.GetRepository<ContactInfo>();
 
-            _contactInfo.Update(_mapper.Map<ContactInfo>(contactInfo));
+            _contactInfo.Update(_mapper.Map<ContactInfo>(contactInfo),UpdateStrategy.OnlyMain);
 
             var result = await _contactInfo.SaveChangesAsync();
 

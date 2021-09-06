@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Abstractions.Data;
 using Abstractions.Dtos;
+using Abstractions.Enums;
 using Abstractions.Results;
 using Abstractions.Services;
 using Application.Constants;
@@ -72,7 +73,7 @@ namespace Application.Services
 
             var _users = _unitOfWork.GetRepository<User>();
 
-            var result = await _users.InsertAsync(_mapper.Map<User>(user));
+            var result = _users.Insert(_mapper.Map<User>(user),insertStrategy:InsertStrategy.OnlytMain);
 
             if (result != null)
             {
@@ -94,7 +95,7 @@ namespace Application.Services
 
             var _users = _unitOfWork.GetRepository<User>();
 
-            _users.Update(_mapper.Map<User>(user));
+            _users.Update(_mapper.Map<User>(user),updateStrategy:UpdateStrategy.OnlyMain);
 
             var result = await _users.SaveChangesAsync();
 
