@@ -62,7 +62,7 @@ namespace Application.Services
 
             var _users = _unitOfWork.GetRepository<ContactInfo>();
 
-            var result = _users.Insert(_mapper.Map<ContactInfo>(contactInfo),InsertStrategy.OnlytMain);
+            var result = _users.Insert(_mapper.Map<ContactInfo>(contactInfo),InsertStrategy.MainIfRequiredChilds);
 
             if (result != null)
             {
@@ -84,7 +84,7 @@ namespace Application.Services
 
             var _contactInfo = _unitOfWork.GetRepository<ContactInfo>();
 
-            _contactInfo.Update(_mapper.Map<ContactInfo>(contactInfo),UpdateStrategy.OnlyMain);
+            _contactInfo.Update(_mapper.Map<ContactInfo>(contactInfo),UpdateStrategy.MainIfRequiredAddChilds);
 
             var result = await _contactInfo.SaveChangesAsync();
 

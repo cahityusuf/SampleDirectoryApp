@@ -73,7 +73,7 @@ namespace Application.Services
 
             var _users = _unitOfWork.GetRepository<User>();
 
-            var result = _users.Insert(_mapper.Map<User>(user),insertStrategy:InsertStrategy.OnlytMain);
+            var result = _users.Insert(_mapper.Map<User>(user),insertStrategy:InsertStrategy.MainIfRequiredChilds);
 
             if (result != null)
             {
@@ -95,7 +95,7 @@ namespace Application.Services
 
             var _users = _unitOfWork.GetRepository<User>();
 
-            _users.Update(_mapper.Map<User>(user),updateStrategy:UpdateStrategy.OnlyMain);
+            _users.Update(_mapper.Map<User>(user),updateStrategy:UpdateStrategy.MainIfRequiredAddChilds);
 
             var result = await _users.SaveChangesAsync();
 
